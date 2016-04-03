@@ -1,0 +1,19 @@
+# hash-base
+
+[![NPM Package](https://img.shields.io/npm/v/hash-base.svg?style=flat-square)](https://www.npmjs.org/package/hash-base)
+[![Build Status](https://img.shields.io/travis/crypto-browserify/hash-base.svg?branch=master&style=flat-square)](https://travis-ci.org/crypto-browserify/hash-base)
+[![Dependency status](https://img.shields.io/david/crypto-browserify/hash-base.svg?style=flat-square)](https://david-dm.org/crypto-browserify/hash-base#info=dependencies)
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+Abstract base class to inherit from if you want to create streams implementing the same API as node crypto streams.
+
+Requires you to implement 2 methods:
+
+  - `_update(data)` takes a buffer and should return nothing
+
+  - `_digest()` takes no arguments and should return a buffer
+
+## LICENSE
+
+MIT
