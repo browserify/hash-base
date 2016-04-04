@@ -19,6 +19,7 @@ HashBase.prototype.update = function (data, encoding) {
   }
 
   this._update(data)
+  return this
 }
 
 HashBase.prototype.digest = function (encoding) {

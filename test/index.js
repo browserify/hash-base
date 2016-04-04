@@ -45,6 +45,12 @@ test('update', function (t) {
     t.end()
   })
 
+  t.test('should return hash instance', function (t) {
+    t.base._update = function () {}
+    t.same(t.base.update(new Buffer(42)), t.base)
+    t.end()
+  })
+
   t.end()
 })
 
