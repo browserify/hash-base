@@ -4,7 +4,7 @@ var inherits = require('inherits')
 
 function HashBase () {
   Transform.call(this)
-  this._initialised = true
+  this._finalized = false
 }
 
 inherits(HashBase, Transform)
@@ -23,8 +23,10 @@ HashBase.prototype.update = function (data, encoding) {
 }
 
 HashBase.prototype.digest = function (encoding) {
-  if (!this._initialised) throw new Error('Not initialized')
-  this._initialised = false
+  // for compatibility with node API
+  // see: https://github.com/nodejs/node/blob/c60faf6ba85b6365145fd8215ed572efa9f25fdc/src/node_crypto.cc#L3723
+  if (this._finalized) throw new Error('Not initialized')
+  this._finalized = true
 
   var digest = this._digest()
   if (encoding === undefined) encoding = HashBase.DEFAULT_ENCODING
