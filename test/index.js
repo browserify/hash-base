@@ -81,6 +81,15 @@ test('decode', function (t) {
     t.end()
   })
 
+  t.test('second call digest throw error', function (t) {
+    t.base._digest = function () {}
+    t.base.digest()
+    t.throws(function () {
+      t.base.digest()
+    }, /^Error: Not initialized$/)
+    t.end()
+  })
+
   t.end()
 })
 
