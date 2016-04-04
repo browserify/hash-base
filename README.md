@@ -6,7 +6,7 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
-Abstract base class to inherit from if you want to create streams implementing the same API as node crypto streams.
+Abstract base class to inherit from if you want to create streams implementing the same API as node crypto [Hash][1] (for [Cipher][2] / [Decipher][3] check [crypto-browserify/cipher-base][4]).
 
 Requires you to implement 2 methods:
 
@@ -17,3 +17,8 @@ Requires you to implement 2 methods:
 ## LICENSE
 
 MIT
+
+[1]: https://nodejs.org/api/crypto.html#crypto_class_hash
+[2]: https://nodejs.org/api/crypto.html#crypto_class_cipher
+[3]: https://nodejs.org/api/crypto.html#crypto_class_decipher
+[4]: https://github.com/crypto-browserify/cipher-base
