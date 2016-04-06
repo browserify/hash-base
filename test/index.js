@@ -41,6 +41,16 @@ test('update', function (t) {
     t.end()
   })
 
+  t.test('call after digest should throw error', function (t) {
+    t.base._update = function () {}
+    t.base._digest = function () {}
+    t.base.digest()
+    t.throws(function () {
+      t.base.update()
+    }, /^Error: Digest already called$/)
+    t.end()
+  })
+
   t.end()
 })
 
@@ -75,7 +85,7 @@ test('digest', function (t) {
     t.base.digest()
     t.throws(function () {
       t.base.digest()
-    }, /^Error: Not initialized$/)
+    }, /^Error: Digest already called$/)
     t.end()
   })
 
