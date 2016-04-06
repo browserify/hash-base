@@ -2,13 +2,10 @@
 var test = require('tape').test
 var HashBase = require('../')
 
-var DEFAULT_ENCODING = HashBase.DEFAULT_ENCODING
-
 function beforeEach (t) {
   var _test = t.test
   t.test = function (name, cb) {
     _test(name, function (t) {
-      HashBase.DEFAULT_ENCODING = DEFAULT_ENCODING
       t.base = new HashBase()
       cb(t)
     })
@@ -18,18 +15,17 @@ function beforeEach (t) {
 test('update', function (t) {
   beforeEach(t)
 
+  t.test('should return hash instance', function (t) {
+    t.base._update = function () {}
+    t.same(t.base.update(new Buffer(42)), t.base)
+    t.end()
+  })
+
   t.test('should pass buffer to _update', function (t) {
     t.plan(1)
     var buffer = new Buffer(42)
     t.base._update = function (data) { t.true(buffer === data) }
     t.base.update(buffer)
-    t.end()
-  })
-
-  t.test('should use DEFAULT_ENCODING', function (t) {
-    HashBase.DEFAULT_ENCODING = 'utf-8'
-    t.base._update = function (data) { t.same(data, new Buffer('ZЪ', 'utf-8')) }
-    t.base.update('ZЪ')
     t.end()
   })
 
@@ -45,16 +41,10 @@ test('update', function (t) {
     t.end()
   })
 
-  t.test('should return hash instance', function (t) {
-    t.base._update = function () {}
-    t.same(t.base.update(new Buffer(42)), t.base)
-    t.end()
-  })
-
   t.end()
 })
 
-test('decode', function (t) {
+test('digest', function (t) {
   beforeEach(t)
 
   t.test('should return buffer from _digest by default', function (t) {
@@ -65,13 +55,6 @@ test('decode', function (t) {
       return buffer
     }
     t.same(t.base.digest(), buffer)
-    t.end()
-  })
-
-  t.test('should use DEFAULT_ENCODING', function (t) {
-    HashBase.DEFAULT_ENCODING = 'utf-8'
-    t.base._digest = function () { return new Buffer('ZЪ', 'utf-8') }
-    t.same(t.base.digest(), 'ZЪ')
     t.end()
   })
 

@@ -9,15 +9,8 @@ function HashBase () {
 
 inherits(HashBase, Transform)
 
-HashBase.DEFAULT_ENCODING = 'buffer'
-
 HashBase.prototype.update = function (data, encoding) {
-  if (!Buffer.isBuffer(data)) {
-    if (encoding === undefined) encoding = HashBase.DEFAULT_ENCODING
-    if (encoding === 'buffer') encoding = 'binary'
-    data = new Buffer(data, encoding)
-  }
-
+  if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
   this._update(data)
   return this
 }
@@ -27,8 +20,7 @@ HashBase.prototype.digest = function (encoding) {
   this._initialised = false
 
   var digest = this._digest()
-  if (encoding === undefined) encoding = HashBase.DEFAULT_ENCODING
-  if (encoding !== 'buffer') digest = digest.toString(encoding)
+  if (encoding !== undefined) digest = digest.toString(encoding)
   return digest
 }
 
