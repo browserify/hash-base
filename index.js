@@ -32,10 +32,10 @@ HashBase.prototype.update = function (data, encoding) {
   }
 
   // update length
-  for (var i = 0, carry = data.length * 8; carry > 0; ++i) {
-    this._length[i] += carry
-    carry = Math.floor(this._length[i] / 0x0100000000)
-    if (carry > 0) this._length[i] -= 0x0100000000 * carry
+  for (var j = 0, carry = data.length * 8; carry > 0; ++j) {
+    this._length[j] += carry
+    carry = Math.floor(this._length[j] / 0x0100000000)
+    if (carry > 0) this._length[j] -= 0x0100000000 * carry
   }
 
   return this
