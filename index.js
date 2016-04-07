@@ -2,8 +2,14 @@
 var Transform = require('stream').Transform
 var inherits = require('inherits')
 
-function HashBase () {
+function HashBase (blockSize) {
   Transform.call(this)
+
+  this._block = new Buffer(blockSize)
+  this._blockSize = blockSize
+  this._blockOffset = 0
+  this._length = [0, 0, 0, 0]
+
   this._finalized = false
 }
 
@@ -12,7 +18,26 @@ inherits(HashBase, Transform)
 HashBase.prototype.update = function (data, encoding) {
   if (this._finalized) throw new Error('Digest already called')
   if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
-  this._update(data)
+
+  // consume data
+  var offset = 0
+  while (this._blockOffset + data.length - offset >= this._blockSize) {
+    for (var i = this._blockOffset; i < this._blockSize;) this._block[i++] = data[offset++]
+    this._update()
+    this._blockOffset = 0
+  }
+
+  while (offset < data.length) {
+    this._block[this._blockOffset++] = data[offset++]
+  }
+
+  // update length
+  for (var i = 0, carry = data.length * 8; carry > 0; ++i) {
+    this._length[i] += carry
+    carry = Math.floor(this._length[i] / 0x0100000000)
+    if (carry > 0) this._length[i] -= 0x0100000000 * carry
+  }
+
   return this
 }
 
@@ -37,7 +62,7 @@ HashBase.prototype._transform = function (chunk, encoding, callback) {
   var error = null
   try {
     if (encoding !== 'buffer') chunk = new Buffer(chunk, encoding)
-    this._update(chunk)
+    this.update(chunk)
   } catch (err) {
     error = err
   }

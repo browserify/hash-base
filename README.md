@@ -8,11 +8,24 @@
 
 Abstract base class to inherit from if you want to create streams implementing the same API as node crypto [Hash][1] (for [Cipher][2] / [Decipher][3] check [crypto-browserify/cipher-base][4]).
 
-Requires you to implement 2 methods:
+## Example
 
-  - `_update(data)` takes a buffer and should return nothing
+```js
+function MyHash () {
+  HashBase.call(64) // in bytes
+}
 
-  - `_digest()` takes no arguments and should return a buffer
+inherti(MyHash, HashBase)
+
+MyHash.prototype._update = function () {
+  // hashing one block with buffer this._block
+}
+
+MyHash.prototype._digest = function () {
+  // create padding and produce result
+}
+```
+You also can check [source code](index.js) or [crypto-browserify/md5.js][5]
 
 ## LICENSE
 
@@ -22,3 +35,4 @@ MIT
 [2]: https://nodejs.org/api/crypto.html#crypto_class_cipher
 [3]: https://nodejs.org/api/crypto.html#crypto_class_decipher
 [4]: https://github.com/crypto-browserify/cipher-base
+[5]: https://github.com/crypto-browserify/md5.js

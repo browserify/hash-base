@@ -6,7 +6,7 @@ function beforeEach (t) {
   var _test = t.test
   t.test = function (name, cb) {
     _test(name, function (t) {
-      t.base = new HashBase()
+      t.base = new HashBase(64)
       cb(t)
     })
   }
@@ -16,33 +16,40 @@ test('update', function (t) {
   beforeEach(t)
 
   t.test('should return hash instance', function (t) {
-    t.base._update = function () {}
-    t.same(t.base.update(new Buffer(42)), t.base)
+    t.same(t.base.update(new Buffer(63)), t.base)
     t.end()
   })
 
-  t.test('should pass buffer to _update', function (t) {
+  t.test('decode string with custom encoding', function (t) {
     t.plan(1)
-    var buffer = new Buffer(42)
-    t.base._update = function (data) { t.true(buffer === data) }
-    t.base.update(buffer)
+    var buffer = new Buffer('УТФ-8 text', 'utf-8')
+    var base = new HashBase(buffer.length)
+    base._update = function () { t.same(this._block, buffer) }
+    base.update(buffer.toString('utf-8'), 'utf-8')
     t.end()
   })
 
-  t.test('should decode string as binary by default', function (t) {
-    t.base._update = function (data) { t.same(data, new Buffer('ZЪ', 'binary')) }
-    t.base.update('ZЪ')
+  t.test('decode string with binary by default', function (t) {
+    t.plan(1)
+    var buffer = new Buffer(64)
+    t.base._update = function () { t.same(this._block, buffer) }
+    t.base.update(buffer.toString('binary'))
     t.end()
   })
 
-  t.test('should decode string with custom encoding', function (t) {
-    t.base._update = function (data) { t.same(data, new Buffer('ZЪ', 'utf-8')) }
-    t.base.update('ZЪ', 'utf-8')
+  t.test('data length is more than 2^32', function (t) {
+    t.plan(3)
+    var buffer = new Buffer(1048576)
+    var base = new HashBase(1048576)
+    base._length = [ 4286578688, 0, 0, 0 ]
+    base._update = function () { t.same(this._block, buffer) }
+    base.update(buffer)
+    base.update(buffer)
+    t.same(base._length, [ 8388608, 1, 0, 0 ])
     t.end()
   })
 
   t.test('call after digest should throw error', function (t) {
-    t.base._update = function () {}
     t.base._digest = function () {}
     t.base.digest()
     t.throws(function () {
@@ -69,14 +76,14 @@ test('digest', function (t) {
   })
 
   t.test('should return buffer by default', function (t) {
-    t.base._digest = function () { return new Buffer('ZЪ', 'utf-8') }
-    t.same(t.base.digest(), new Buffer('ZЪ', 'utf-8'))
+    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf-8') }
+    t.same(t.base.digest(), new Buffer('УТФ-8 text', 'utf-8'))
     t.end()
   })
 
   t.test('should encode result with custom encoding', function (t) {
-    t.base._digest = function () { return new Buffer('ZЪ', 'utf-8') }
-    t.same(t.base.digest('utf-8'), 'ZЪ')
+    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf-8') }
+    t.same(t.base.digest('utf-8'), 'УТФ-8 text')
     t.end()
   })
 
@@ -121,10 +128,10 @@ test('_digest', function (t) {
 test('_transform', function (t) {
   beforeEach(t)
 
-  t.test('should use _update', function (t) {
+  t.test('should use update', function (t) {
     t.plan(2)
     var buffer = new Buffer(42)
-    t.base._update = function (data) { t.true(data === buffer) }
+    t.base.update = function (data) { t.true(data === buffer) }
     t.base._transform(buffer, 'buffer', function (err) {
       t.same(err, null)
     })
@@ -133,17 +140,17 @@ test('_transform', function (t) {
 
   t.test('should decode string with custom encoding', function (t) {
     t.plan(2)
-    t.base._update = function (data) { t.same(data, new Buffer('ZЪ', 'utf-8')) }
-    t.base._transform('ZЪ', 'utf-8', function (err) {
+    t.base.update = function (data) { t.same(data, new Buffer('УТФ-8 text', 'utf-8')) }
+    t.base._transform('УТФ-8 text', 'utf-8', function (err) {
       t.same(err, null)
     })
     t.end()
   })
 
-  t.test('should handle error in _update', function (t) {
+  t.test('should handle error in update', function (t) {
     t.plan(1)
     var err = new Error('hey')
-    t.base._update = function () { throw err }
+    t.base.update = function () { throw err }
     t.base._transform(new Buffer(42), 'buffer', function (_err) {
       t.true(_err === err)
     })
