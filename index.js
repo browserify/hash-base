@@ -20,16 +20,14 @@ HashBase.prototype.update = function (data, encoding) {
   if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
 
   // consume data
+  var block = this._block
   var offset = 0
   while (this._blockOffset + data.length - offset >= this._blockSize) {
-    for (var i = this._blockOffset; i < this._blockSize;) this._block[i++] = data[offset++]
+    for (var i = this._blockOffset; i < this._blockSize;) block[i++] = data[offset++]
     this._update()
     this._blockOffset = 0
   }
-
-  while (offset < data.length) {
-    this._block[this._blockOffset++] = data[offset++]
-  }
+  while (offset < data.length) block[this._blockOffset++] = data[offset++]
 
   // update length
   for (var j = 0, carry = data.length * 8; carry > 0; ++j) {
