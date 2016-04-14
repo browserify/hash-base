@@ -34,7 +34,7 @@ HashBase.prototype.update = function (data, encoding) {
   // update length
   for (var j = 0, carry = data.length * 8; carry > 0; ++j) {
     this._length[j] += carry
-    carry = Math.floor(this._length[j] / 0x0100000000)
+    carry = (this._length[j] / 0x0100000000) | 0
     if (carry > 0) this._length[j] -= 0x0100000000 * carry
   }
 
