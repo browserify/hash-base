@@ -22,10 +22,10 @@ test('update', function (t) {
 
   t.test('decode string with custom encoding', function (t) {
     t.plan(1)
-    var buffer = new Buffer('УТФ-8 text', 'utf-8')
+    var buffer = new Buffer('УТФ-8 text', 'utf8')
     var base = new HashBase(buffer.length)
     base._update = function () { t.same(this._block, buffer) }
-    base.update(buffer.toString('utf-8'), 'utf-8')
+    base.update(buffer.toString('utf8'), 'utf8')
     t.end()
   })
 
@@ -76,14 +76,14 @@ test('digest', function (t) {
   })
 
   t.test('should return buffer by default', function (t) {
-    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf-8') }
-    t.same(t.base.digest(), new Buffer('УТФ-8 text', 'utf-8'))
+    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf8') }
+    t.same(t.base.digest(), new Buffer('УТФ-8 text', 'utf8'))
     t.end()
   })
 
   t.test('should encode result with custom encoding', function (t) {
-    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf-8') }
-    t.same(t.base.digest('utf-8'), 'УТФ-8 text')
+    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf8') }
+    t.same(t.base.digest('utf8'), 'УТФ-8 text')
     t.end()
   })
 
@@ -140,8 +140,8 @@ test('_transform', function (t) {
 
   t.test('should decode string with custom encoding', function (t) {
     t.plan(2)
-    t.base.update = function (data) { t.same(data, new Buffer('УТФ-8 text', 'utf-8')) }
-    t.base._transform('УТФ-8 text', 'utf-8', function (err) {
+    t.base.update = function (data) { t.same(data, new Buffer('УТФ-8 text', 'utf8')) }
+    t.base._transform('УТФ-8 text', 'utf8', function (err) {
       t.same(err, null)
     })
     t.end()

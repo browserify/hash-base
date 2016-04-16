@@ -15,6 +15,29 @@ function HashBase (blockSize) {
 
 inherits(HashBase, Transform)
 
+HashBase.prototype._transform = function (chunk, encoding, callback) {
+  var error = null
+  try {
+    if (encoding !== 'buffer') chunk = new Buffer(chunk, encoding)
+    this.update(chunk)
+  } catch (err) {
+    error = err
+  }
+
+  callback(error)
+}
+
+HashBase.prototype._flush = function (callback) {
+  var error = null
+  try {
+    this.push(this._digest())
+  } catch (err) {
+    error = err
+  }
+
+  callback(error)
+}
+
 HashBase.prototype.update = function (data, encoding) {
   if (this._finalized) throw new Error('Digest already called')
   if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
@@ -39,6 +62,10 @@ HashBase.prototype.update = function (data, encoding) {
   return this
 }
 
+HashBase.prototype._update = function (data) {
+  throw new Error('_update is not implemented')
+}
+
 HashBase.prototype.digest = function (encoding) {
   if (this._finalized) throw new Error('Digest already called')
   this._finalized = true
@@ -48,35 +75,8 @@ HashBase.prototype.digest = function (encoding) {
   return digest
 }
 
-HashBase.prototype._update = function (data) {
-  throw new Error('_update is not implemented')
-}
-
 HashBase.prototype._digest = function () {
   throw new Error('_digest is not implemented')
-}
-
-HashBase.prototype._transform = function (chunk, encoding, callback) {
-  var error = null
-  try {
-    if (encoding !== 'buffer') chunk = new Buffer(chunk, encoding)
-    this.update(chunk)
-  } catch (err) {
-    error = err
-  }
-
-  callback(error)
-}
-
-HashBase.prototype._flush = function (callback) {
-  var error = null
-  try {
-    this.push(this._digest())
-  } catch (err) {
-    error = err
-  }
-
-  callback(error)
 }
 
 module.exports = HashBase
