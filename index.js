@@ -39,6 +39,7 @@ HashBase.prototype._flush = function (callback) {
 }
 
 HashBase.prototype.update = function (data, encoding) {
+  if (!Buffer.isBuffer(data) && typeof data !== 'string') throw new TypeError('Data must be a string or a buffer')
   if (this._finalized) throw new Error('Digest already called')
   if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
 
