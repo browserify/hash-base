@@ -1,5 +1,5 @@
 'use strict'
-var test = require('tape').test
+var test = require('tape')
 var HashBase = require('../')
 
 function beforeEach (t) {
@@ -87,11 +87,13 @@ test('update', function (t) {
     t.end()
   })
 
-  t.test('decode string with binary by default', function (t) {
+  t.test('decode string with utf8 by default', function (t) {
     t.plan(1)
     var buffer = new Buffer(64)
+    buffer.fill(0)
+    new Buffer('УТФ-8', 'utf8').copy(buffer)
     t.base._update = function () { t.same(this._block, buffer) }
-    t.base.update(buffer.toString('binary'))
+    t.base.update(buffer.toString('utf8'))
     t.end()
   })
 
