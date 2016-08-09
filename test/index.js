@@ -1,5 +1,6 @@
 'use strict'
 var test = require('tape')
+var randomBytes = require('crypto').randomBytes
 var HashBase = require('../')
 
 function beforeEach (t) {
@@ -17,7 +18,7 @@ test('_transform', function (t) {
 
   t.test('should use update', function (t) {
     t.plan(2)
-    var buffer = new Buffer(42)
+    var buffer = new Buffer(randomBytes(42))
     t.base.update = function (data) { t.true(data === buffer) }
     t.base._transform(buffer, 'buffer', function (err) {
       t.same(err, null)
@@ -38,7 +39,7 @@ test('_transform', function (t) {
     t.plan(1)
     var err = new Error('hey')
     t.base.update = function () { throw err }
-    t.base._transform(new Buffer(42), 'buffer', function (_err) {
+    t.base._transform(new Buffer(randomBytes(42)), 'buffer', function (_err) {
       t.true(_err === err)
     })
     t.end()
@@ -52,7 +53,7 @@ test('_flush', function (t) {
 
   t.test('should use _digest', function (t) {
     t.plan(2)
-    var buffer = new Buffer(42)
+    var buffer = new Buffer(randomBytes(42))
     t.base._digest = function () { return buffer }
     t.base.push = function (data) { t.true(data === buffer) }
     t.base._flush(function (err) { t.same(err, null) })
@@ -64,6 +65,15 @@ test('_flush', function (t) {
     var err = new Error('hey')
     t.base._digest = function () { throw err }
     t.base._flush(function (_err) { t.true(_err === err) })
+    t.end()
+  })
+
+  t.test('should throw "Digest already called" on second _flush call', function (t) {
+    var buffer = new Buffer(randomBytes(42))
+    t.base._digest = function () { return buffer }
+    t.base._flush(function (err) { t.error(err) })
+    t.base._flush(function (err) { t.same(err.message, 'Digest already called') })
+    t.same(t.base.read(), buffer)
     t.end()
   })
 
@@ -139,7 +149,7 @@ test('digest', function (t) {
 
   t.test('should return buffer from _digest by default', function (t) {
     t.plan(2)
-    var buffer = new Buffer(42)
+    var buffer = new Buffer(randomBytes(42))
     t.base._digest = function () {
       t.pass()
       return buffer
