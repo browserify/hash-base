@@ -15,7 +15,7 @@ function MyHash () {
   HashBase.call(64) // in bytes
 }
 
-inherti(MyHash, HashBase)
+inherits(MyHash, HashBase)
 
 MyHash.prototype._update = function () {
   // hashing one block with buffer this._block
