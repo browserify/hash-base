@@ -26,9 +26,12 @@ test('_transform', function (t) {
     t.end()
   })
 
-  t.test('should decode string with custom encoding', function (t) {
-    t.plan(2)
-    t.base.update = function (data) { t.same(data, new Buffer('УТФ-8 text', 'utf8')) }
+  t.test('should pass encoding to update', function (t) {
+    t.plan(3)
+    t.base.update = function (data, encoding) {
+      t.same(data, 'УТФ-8 text')
+      t.same(encoding, 'utf8')
+    }
     t.base._transform('УТФ-8 text', 'utf8', function (err) {
       t.same(err, null)
     })
