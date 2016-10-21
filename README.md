@@ -11,20 +11,23 @@ Abstract base class to inherit from if you want to create streams implementing t
 ## Example
 
 ```js
-function MyHash () {
-  HashBase.call(64) // in bytes
-}
+import HashBase from 'hash-base'
 
-inherits(MyHash, HashBase)
+class MyHash extends HashBase {
+  constructor () {
+    super(64) // in bytes
+  }
 
-MyHash.prototype._update = function () {
-  // hashing one block with buffer this._block
-}
+  _update () {
+    // hashing one block with buffer this._block
+  }
 
-MyHash.prototype._digest = function () {
-  // create padding and produce result
+  _digest () {
+    // create padding and produce result
+  }
 }
 ```
+
 You also can check [source code](index.js) or [crypto-browserify/md5.js][5]
 
 ## LICENSE

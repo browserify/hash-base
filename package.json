@@ -13,25 +13,33 @@
   "license": "MIT",
   "author": "Kirill Fomichev <fanatid@ya.ru> (https://github.com/fanatid)",
   "files": [
+    "index.es",
     "index.js"
   ],
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/crypto-browserify/hash-base.git"
   },
   "scripts": {
-    "coverage": "nyc node test/*.js",
+    "build": "babel index.es -o index.js",
+    "coverage": "nyc --require ./_require.js tape test/*.js",
+    "coverage-lcov": "npm run coverage && nyc report -r lcov",
     "lint": "standard",
+    "prepublish": "npm run build",
     "test": "npm run lint && npm run unit",
-    "unit": "node test/*.js"
-  },
-  "dependencies": {
-    "inherits": "^2.0.1"
+    "unit": "tape -r ./_require.js test/*.js"
   },
   "devDependencies": {
-    "nyc": "^7.0.0",
-    "standard": "^7.0.0",
-    "tape": "^4.2.0"
+    "babel-cli": "^6.16.0",
+    "babel-eslint": "^7.0.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-register": "^6.14.0",
+    "nyc": "^8.3.0",
+    "require-extensions-order": "^1.0.1",
+    "standard": "*",
+    "tape": "^4.6.0"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
