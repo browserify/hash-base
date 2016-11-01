@@ -30,8 +30,8 @@
     "inherits": "^2.0.1"
   },
   "devDependencies": {
-    "nyc": "^7.0.0",
-    "standard": "^7.0.0",
+    "nyc": "^8.3.2",
+    "standard": "*",
     "tape": "^4.2.0"
   }
 }
