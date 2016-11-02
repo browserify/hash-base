@@ -3,7 +3,7 @@ var test = require('tape')
 var HashBase = require('../')
 
 var utf8text = 'УТФ-8 text'
-var utf8buf = new Buffer(utf8text, 'utf8')
+var utf8buf = Buffer.from(utf8text, 'utf8')
 function noop () {}
 
 function createHashBase (t) { t.base = new HashBase(64) }
@@ -38,7 +38,7 @@ test('HashBase#_transform', function (t) {
     t.plan(1)
     var err = new Error('hey')
     t.base.update = function () { throw err }
-    t.base._transform(new Buffer(0), 'buffer', function (_err) {
+    t.base._transform(Buffer.allocUnsafe(0), 'buffer', function (_err) {
       t.true(_err === err)
     })
     t.end()
@@ -52,7 +52,7 @@ test('HashBase#_flush', function (t) {
 
   t.test('should use HashBase#digest', function (t) {
     t.plan(2)
-    var buffer = new Buffer(0)
+    var buffer = Buffer.allocUnsafe(0)
     t.base.push = function (data) { t.true(data === buffer) }
     t.base.digest = function () { return buffer }
     t.base._flush(function (err) { t.same(err, null) })
@@ -92,13 +92,13 @@ test('HashBase#update', function (t) {
   t.test('should use HashBase#_update', function (t) {
     t.plan(1)
     t.base._update = t.pass
-    t.base.update(new Buffer(64))
+    t.base.update(Buffer.allocUnsafe(64))
     t.end()
   })
 
   t.test('default encoding is utf8', function (t) {
     t.plan(1)
-    var buffer = new Buffer(64)
+    var buffer = Buffer.allocUnsafe(64)
     buffer.fill(0)
     utf8buf.copy(buffer)
     t.base._update = function () { t.same(this._block, buffer) }
@@ -108,8 +108,7 @@ test('HashBase#update', function (t) {
 
   t.test('decode string with custom encoding', function (t) {
     t.plan(1)
-    var buffer = new Buffer(64)
-    buffer.fill(0x42)
+    var buffer = Buffer.allocUnsafe(64).fill(0x42)
     t.base._update = function () { t.same(this._block, buffer) }
     t.base.update(buffer.toString('hex'), 'hex')
     t.end()
@@ -117,13 +116,13 @@ test('HashBase#update', function (t) {
 
   t.test('data length is more than 2^32 bits', function (t) {
     t.base._length = [ Math.pow(2, 32) - 1, 0, 0, 0 ]
-    t.base.update(new Buffer(1))
+    t.base.update(Buffer.allocUnsafe(1))
     t.same(t.base._length, [ 7, 1, 0, 0 ])
     t.end()
   })
 
   t.test('should return `this`', function (t) {
-    t.same(t.base.update(new Buffer(0)), t.base)
+    t.same(t.base.update(Buffer.allocUnsafe(0)), t.base)
     t.end()
   })
 
