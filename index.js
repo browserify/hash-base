@@ -2,6 +2,12 @@
 var Transform = require('stream').Transform
 var inherits = require('inherits')
 
+function throwIfNotStringOrBuffer (val, prefix) {
+  if (!Buffer.isBuffer(val) && typeof val !== 'string') {
+    throw new TypeError(prefix + ' must be a string or a buffer')
+  }
+}
+
 function HashBase (blockSize) {
   Transform.call(this)
 
@@ -38,7 +44,7 @@ HashBase.prototype._flush = function (callback) {
 }
 
 HashBase.prototype.update = function (data, encoding) {
-  if (!Buffer.isBuffer(data) && typeof data !== 'string') throw new TypeError('Data must be a string or a buffer')
+  throwIfNotStringOrBuffer(data, 'Data')
   if (this._finalized) throw new Error('Digest already called')
   if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding)
 
