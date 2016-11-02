@@ -1,48 +1,44 @@
 'use strict'
 var test = require('tape')
-var randomBytes = require('crypto').randomBytes
 var HashBase = require('../')
 
+var utf8text = 'УТФ-8 text'
+var utf8buf = new Buffer(utf8text, 'utf8')
+function noop () {}
+
+function createHashBase (t) { t.base = new HashBase(64) }
+
 function beforeEach (t) {
+  var fns = Array.prototype.slice.call(arguments, 1)
   var _test = t.test
-  t.test = function (name, cb) {
+  t.test = function (name, callback) {
     _test(name, function (t) {
-      t.base = new HashBase(64)
-      cb(t)
+      for (var i = 0; i < fns.length; ++i) t = fns[i](t) || t
+      callback(t)
     })
   }
 }
 
-test('_transform', function (t) {
-  beforeEach(t)
+test('HashBase#_transform', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('should use update', function (t) {
-    t.plan(2)
-    var buffer = new Buffer(randomBytes(42))
-    t.base.update = function (data) { t.true(data === buffer) }
-    t.base._transform(buffer, 'buffer', function (err) {
-      t.same(err, null)
-    })
-    t.end()
-  })
-
-  t.test('should pass encoding to update', function (t) {
+  t.test('should use HashBase#update', function (t) {
     t.plan(3)
-    t.base.update = function (data, encoding) {
-      t.same(data, 'УТФ-8 text')
-      t.same(encoding, 'utf8')
+    t.base.update = function () {
+      t.same(arguments[0], utf8text)
+      t.same(arguments[1], 'utf8')
     }
-    t.base._transform('УТФ-8 text', 'utf8', function (err) {
+    t.base._transform(utf8text, 'utf8', function (err) {
       t.same(err, null)
     })
     t.end()
   })
 
-  t.test('should handle error in update', function (t) {
+  t.test('should handle error in HashBase#update', function (t) {
     t.plan(1)
     var err = new Error('hey')
     t.base.update = function () { throw err }
-    t.base._transform(new Buffer(randomBytes(42)), 'buffer', function (_err) {
+    t.base._transform(new Buffer(0), 'buffer', function (_err) {
       t.true(_err === err)
     })
     t.end()
@@ -51,93 +47,93 @@ test('_transform', function (t) {
   t.end()
 })
 
-test('_flush', function (t) {
-  beforeEach(t)
+test('HashBase#_flush', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('should use _digest', function (t) {
+  t.test('should use HashBase#digest', function (t) {
     t.plan(2)
-    var buffer = new Buffer(randomBytes(42))
-    t.base._digest = function () { return buffer }
+    var buffer = new Buffer(0)
     t.base.push = function (data) { t.true(data === buffer) }
+    t.base.digest = function () { return buffer }
     t.base._flush(function (err) { t.same(err, null) })
     t.end()
   })
 
-  t.test('should handle errors in _digest', function (t) {
+  t.test('should handle errors in HashBase#digest', function (t) {
     t.plan(1)
     var err = new Error('hey')
-    t.base._digest = function () { throw err }
+    t.base.digest = function () { throw err }
     t.base._flush(function (_err) { t.true(_err === err) })
-    t.end()
-  })
-
-  t.test('should throw "Digest already called" on second _flush call', function (t) {
-    var buffer = new Buffer(randomBytes(42))
-    t.base._digest = function () { return buffer }
-    t.base._flush(function (err) { t.error(err) })
-    t.base._flush(function (err) { t.same(err.message, 'Digest already called') })
-    t.same(t.base.read(), buffer)
     t.end()
   })
 
   t.end()
 })
 
-test('update', function (t) {
-  beforeEach(t)
+test('HashBase#update', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('should return hash instance', function (t) {
-    t.same(t.base.update(new Buffer(63)), t.base)
+  t.test('only string or buffer is allowed', function (t) {
+    t.throws(function () {
+      t.base.update(null)
+    }, /^TypeError: Data must be a string or a buffer$/)
     t.end()
   })
 
-  t.test('decode string with custom encoding', function (t) {
+  t.test('should throw error after HashBase#digest', function (t) {
+    t.base._digest = noop
+    t.base.digest()
+    t.throws(function () {
+      t.base.update('')
+    }, /^Error: Digest already called$/)
+    t.end()
+  })
+
+  t.test('should use HashBase#_update', function (t) {
     t.plan(1)
-    var buffer = new Buffer('УТФ-8 text', 'utf8')
-    var base = new HashBase(buffer.length)
-    base._update = function () { t.same(this._block, buffer) }
-    base.update(buffer.toString('utf8'), 'utf8')
+    t.base._update = t.pass
+    t.base.update(new Buffer(64))
     t.end()
   })
 
-  t.test('decode string with utf8 by default', function (t) {
+  t.test('default encoding is utf8', function (t) {
     t.plan(1)
     var buffer = new Buffer(64)
     buffer.fill(0)
-    new Buffer('УТФ-8', 'utf8').copy(buffer)
+    utf8buf.copy(buffer)
     t.base._update = function () { t.same(this._block, buffer) }
     t.base.update(buffer.toString('utf8'))
     t.end()
   })
 
-  t.test('data length is more than 2^32', function (t) {
-    t.plan(3)
-    var buffer = new Buffer(1048576)
-    var base = new HashBase(1048576)
-    base._length = [ 4286578688, 0, 0, 0 ]
-    base._update = function () { t.same(this._block, buffer) }
-    base.update(buffer)
-    base.update(buffer)
-    t.same(base._length, [ 8388608, 1, 0, 0 ])
+  t.test('decode string with custom encoding', function (t) {
+    t.plan(1)
+    var buffer = new Buffer(64)
+    buffer.fill(0x42)
+    t.base._update = function () { t.same(this._block, buffer) }
+    t.base.update(buffer.toString('hex'), 'hex')
     t.end()
   })
 
-  t.test('call after digest should throw error', function (t) {
-    t.base._digest = function () {}
-    t.base.digest()
-    t.throws(function () {
-      t.base.update(new Buffer(0))
-    }, /^Error: Digest already called$/)
+  t.test('data length is more than 2^32 bits', function (t) {
+    t.base._length = [ Math.pow(2, 32) - 1, 0, 0, 0 ]
+    t.base.update(new Buffer(1))
+    t.same(t.base._length, [ 7, 1, 0, 0 ])
+    t.end()
+  })
+
+  t.test('should return `this`', function (t) {
+    t.same(t.base.update(new Buffer(0)), t.base)
     t.end()
   })
 
   t.end()
 })
 
-test('_update', function (t) {
-  beforeEach(t)
+test('HashBase#_update', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('should throw error by default', function (t) {
+  t.test('is not implemented', function (t) {
     t.throws(function () {
       t.base._update()
     }, /^Error: _update is not implemented$/)
@@ -147,34 +143,11 @@ test('_update', function (t) {
   t.end()
 })
 
-test('digest', function (t) {
-  beforeEach(t)
+test('HashBase#digest', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('should return buffer from _digest by default', function (t) {
-    t.plan(2)
-    var buffer = new Buffer(randomBytes(42))
-    t.base._digest = function () {
-      t.pass()
-      return buffer
-    }
-    t.same(t.base.digest(), buffer)
-    t.end()
-  })
-
-  t.test('should return buffer by default', function (t) {
-    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf8') }
-    t.same(t.base.digest(), new Buffer('УТФ-8 text', 'utf8'))
-    t.end()
-  })
-
-  t.test('should encode result with custom encoding', function (t) {
-    t.base._digest = function () { return new Buffer('УТФ-8 text', 'utf8') }
-    t.same(t.base.digest('utf8'), 'УТФ-8 text')
-    t.end()
-  })
-
-  t.test('second call digest throw error', function (t) {
-    t.base._digest = function () {}
+  t.test('should throw error on second call', function (t) {
+    t.base._digest = noop
     t.base.digest()
     t.throws(function () {
       t.base.digest()
@@ -182,13 +155,32 @@ test('digest', function (t) {
     t.end()
   })
 
+  t.test('should use HashBase#_digest', function (t) {
+    t.plan(1)
+    t.base._digest = t.pass
+    t.base.digest()
+    t.end()
+  })
+
+  t.test('should return buffer by default', function (t) {
+    t.base._digest = function () { return utf8buf }
+    t.same(t.base.digest(), utf8buf)
+    t.end()
+  })
+
+  t.test('should encode result with custom encoding', function (t) {
+    t.base._digest = function () { return utf8buf }
+    t.same(t.base.digest('utf8'), utf8text)
+    t.end()
+  })
+
   t.end()
 })
 
-test('_digest', function (t) {
-  beforeEach(t)
+test('HashBase#_digest', function (t) {
+  beforeEach(t, createHashBase)
 
-  t.test('_digest should throw error by default', function (t) {
+  t.test('is not implemented', function (t) {
     t.throws(function () {
       t.base._digest()
     }, /^Error: _digest is not implemented$/)
