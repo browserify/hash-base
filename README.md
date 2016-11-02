@@ -11,6 +11,8 @@ Abstract base class to inherit from if you want to create streams implementing t
 ## Example
 
 ```js
+var HashBase = require('hash-base')
+
 function MyHash () {
   HashBase.call(64) // in bytes
 }
