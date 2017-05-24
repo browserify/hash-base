@@ -27,7 +27,8 @@
     "unit": "node test/*.js"
   },
   "dependencies": {
-    "inherits": "^2.0.1"
+    "inherits": "^2.0.1",
+    "safe-buffer": "^5.0.1"
   },
   "devDependencies": {
     "nyc": "^8.3.2",
