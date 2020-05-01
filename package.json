@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "inherits": "^2.0.4",
+    "readable-stream": "^3.6.0",
     "safe-buffer": "^5.2.0"
   },
   "devDependencies": {
