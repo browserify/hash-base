@@ -15,9 +15,11 @@ const HashBase = require('hash-base')
 
 // our hash function is XOR sum of all bytes
 class MyHash extends HashBase {
-  super(1) // in bytes
-
   this._sum = 0x00
+
+  constructor() {
+    super(1) // in bytes
+  }
 
   _update () {
     for (let i = 0; i < this._block.length; ++i) this._sum ^= this._block[i]
