@@ -28,10 +28,10 @@
   },
   "devDependencies": {
     "nyc": "^15.0.1",
-    "standard": "^14.3.3",
+    "standard": "^17.0.0",
     "tape": "^5.0.0"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=14.18.0"
   }
 }

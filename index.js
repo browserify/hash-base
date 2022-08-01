@@ -22,7 +22,7 @@ class HashBase extends Transform {
   }
 
   _transform (chunk, encoding, callback) {
-    var error = null
+    let error = null
     try {
       this.update(chunk, encoding)
     } catch (err) {
@@ -33,7 +33,7 @@ class HashBase extends Transform {
   }
 
   _flush (callback) {
-    var error = null
+    let error = null
     try {
       this.push(this.digest())
     } catch (err) {
@@ -45,29 +45,26 @@ class HashBase extends Transform {
 
   update (data, encoding) {
     throwIfNotStringOrBuffer(data, 'Data')
-    if (this._finalized)
-      throw new Error('Digest already called')
-    if (!Buffer.isBuffer(data))
-      data = Buffer.from(data, encoding)
+    if (this._finalized) throw new Error('Digest already called')
+    if (!Buffer.isBuffer(data)) data = Buffer.from(data, encoding)
 
     // consume data
-    var block = this._block
-    var offset = 0
+    const block = this._block
+    let offset = 0
     while (this._blockOffset + data.length - offset >= this._blockSize) {
-      for (var i = this._blockOffset; i < this._blockSize;)
+      for (let i = this._blockOffset; i < this._blockSize;) {
         block[i++] = data[offset++]
+      }
       this._update()
       this._blockOffset = 0
     }
-    while (offset < data.length)
-      block[this._blockOffset++] = data[offset++]
+    while (offset < data.length) block[this._blockOffset++] = data[offset++]
 
     // update length
-    for (var j = 0, carry = data.length * 8; carry > 0; ++j) {
+    for (let j = 0, carry = data.length * 8; carry > 0; ++j) {
       this._length[j] += carry
       carry = (this._length[j] / 0x0100000000) | 0
-      if (carry > 0)
-        this._length[j] -= 0x0100000000 * carry
+      if (carry > 0) this._length[j] -= 0x0100000000 * carry
     }
 
     return this
@@ -78,19 +75,16 @@ class HashBase extends Transform {
   }
 
   digest (encoding) {
-    if (this._finalized)
-      throw new Error('Digest already called')
+    if (this._finalized) throw new Error('Digest already called')
     this._finalized = true
 
-    var digest = this._digest()
-    if (encoding !== undefined)
-      digest = digest.toString(encoding)
+    let digest = this._digest()
+    if (encoding !== undefined) digest = digest.toString(encoding)
 
     // reset state
     this._block.fill(0)
     this._blockOffset = 0
-    for (var i = 0; i < 4; ++i)
-      this._length[i] = 0
+    for (let i = 0; i < 4; ++i) this._length[i] = 0
 
     return digest
   }
