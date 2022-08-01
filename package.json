@@ -26,11 +26,6 @@
     "test": "npm run lint && npm run unit",
     "unit": "node test/*.js"
   },
-  "dependencies": {
-    "inherits": "^2.0.4",
-    "readable-stream": "^3.6.0",
-    "safe-buffer": "^5.2.0"
-  },
   "devDependencies": {
     "nyc": "^15.0.1",
     "standard": "^14.3.3",
