@@ -1,19 +1,19 @@
 'use strict'
-var test = require('tape')
-var HashBase = require('../')
+const test = require('tape')
+const HashBase = require('../index.js')
 
-var utf8text = 'УТФ-8 text'
-var utf8buf = Buffer.from(utf8text, 'utf8')
+const utf8text = 'УТФ-8 text'
+const utf8buf = Buffer.from(utf8text, 'utf8')
 function noop () {}
 
 function createHashBase (t) { t.base = new HashBase(64) }
 
 function beforeEach (t) {
-  var fns = Array.prototype.slice.call(arguments, 1)
-  var _test = t.test
+  const fns = Array.prototype.slice.call(arguments, 1)
+  const _test = t.test
   t.test = function (name, callback) {
     _test(name, function (t) {
-      for (var i = 0; i < fns.length; ++i) t = fns[i](t) || t
+      for (let i = 0; i < fns.length; ++i) t = fns[i](t) || t
       callback(t)
     })
   }
@@ -36,7 +36,7 @@ test('HashBase#_transform', function (t) {
 
   t.test('should handle error in HashBase#update', function (t) {
     t.plan(1)
-    var err = new Error('hey')
+    const err = new Error('hey')
     t.base.update = function () { throw err }
     t.base._transform(Buffer.allocUnsafe(0), 'buffer', function (_err) {
       t.true(_err === err)
@@ -52,7 +52,7 @@ test('HashBase#_flush', function (t) {
 
   t.test('should use HashBase#digest', function (t) {
     t.plan(2)
-    var buffer = Buffer.allocUnsafe(0)
+    const buffer = Buffer.allocUnsafe(0)
     t.base.push = function (data) { t.true(data === buffer) }
     t.base.digest = function () { return buffer }
     t.base._flush(function (err) { t.same(err, null) })
@@ -61,7 +61,7 @@ test('HashBase#_flush', function (t) {
 
   t.test('should handle errors in HashBase#digest', function (t) {
     t.plan(1)
-    var err = new Error('hey')
+    const err = new Error('hey')
     t.base.digest = function () { throw err }
     t.base._flush(function (_err) { t.true(_err === err) })
     t.end()
@@ -98,7 +98,7 @@ test('HashBase#update', function (t) {
 
   t.test('default encoding is utf8', function (t) {
     t.plan(1)
-    var buffer = Buffer.allocUnsafe(64)
+    const buffer = Buffer.allocUnsafe(64)
     buffer.fill(0)
     utf8buf.copy(buffer)
     t.base._update = function () { t.same(this._block, buffer) }
@@ -108,7 +108,7 @@ test('HashBase#update', function (t) {
 
   t.test('decode string with custom encoding', function (t) {
     t.plan(1)
-    var buffer = Buffer.allocUnsafe(64).fill(0x42)
+    const buffer = Buffer.allocUnsafe(64).fill(0x42)
     t.base._update = function () { t.same(this._block, buffer) }
     t.base.update(buffer.toString('hex'), 'hex')
     t.end()

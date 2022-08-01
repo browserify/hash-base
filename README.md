@@ -12,23 +12,22 @@ Abstract base class to inherit from if you want to create streams implementing t
 
 ```js
 const HashBase = require('hash-base')
-const inherits = require('inherits')
 
 // our hash function is XOR sum of all bytes
-function MyHash () {
-  HashBase.call(this, 1) // in bytes
-
+class MyHash extends HashBase {
   this._sum = 0x00
-}
 
-inherits(MyHash, HashBase)
+  constructor() {
+    super(1) // in bytes
+  }
 
-MyHash.prototype._update = function () {
-  for (let i = 0; i < this._block.length; ++i) this._sum ^= this._block[i]
-}
+  _update () {
+    for (let i = 0; i < this._block.length; ++i) this._sum ^= this._block[i]
+  }
 
-MyHash.prototype._digest = function () {
-  return this._sum
+  _digest () {
+    return this._sum
+  }
 }
 
 const data = Buffer.from([ 0x00, 0x42, 0x01 ])
