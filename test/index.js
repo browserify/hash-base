@@ -1,6 +1,7 @@
 'use strict'
 var test = require('tape')
 var HashBase = require('../')
+var Buffer = require('safe-buffer').Buffer
 
 var utf8text = 'УТФ-8 text'
 var utf8buf = Buffer.from(utf8text, 'utf8')
