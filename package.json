@@ -28,8 +28,8 @@
 		"posttest": "npx npm@'>=10.2' audit --production"
 	},
 	"dependencies": {
-		"inherits": "^2.0.1",
-		"safe-buffer": "^5.0.1"
+		"inherits": "^2.0.4",
+		"safe-buffer": "^5.2.1"
 	},
 	"devDependencies": {
 		"nyc": "^10.3.2",
