@@ -109,7 +109,8 @@ test('HashBase#update', function (t) {
 
   t.test('decode string with custom encoding', function (t) {
     t.plan(1)
-    var buffer = Buffer.allocUnsafe(64).fill(0x42)
+    var buffer = Buffer.allocUnsafe(64)
+    buffer.fill(0x42)
     t.base._update = function () { t.same(this._block, buffer) }
     t.base.update(buffer.toString('hex'), 'hex')
     t.end()
