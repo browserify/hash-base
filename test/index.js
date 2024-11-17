@@ -115,9 +115,9 @@ test('HashBase#update', function (t) {
   })
 
   t.test('data length is more than 2^32 bits', function (t) {
-    t.base._length = [ Math.pow(2, 32) - 1, 0, 0, 0 ]
+    t.base._length = [Math.pow(2, 32) - 1, 0, 0, 0]
     t.base.update(Buffer.allocUnsafe(1))
-    t.same(t.base._length, [ 7, 1, 0, 0 ])
+    t.same(t.base._length, [7, 1, 0, 0])
     t.end()
   })
 
