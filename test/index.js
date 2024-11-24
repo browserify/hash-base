@@ -68,7 +68,7 @@ test('HashBase#update', function (t) {
     var base = new HashBase(64)
     t.throws(function () {
       base.update(null)
-    }, /^TypeError: Data must be a string or a buffer$/)
+    }, /^TypeError: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView.$/)
     t.end()
   })
 
@@ -131,6 +131,25 @@ test('HashBase#update', function (t) {
 
     t.end()
   })
+
+  t.test(
+    'handle UInt16Array',
+    {
+      skip: !(
+        ArrayBuffer.isView &&
+        (Buffer.prototype instanceof Uint8Array || Buffer.TYPED_ARRAY_SUPPORT)
+      ) && 'ArrayBuffer.isView and TypedArray fully supported'
+    },
+    function (t) {
+      var base = new HashBase(64)
+
+      base._update = noop
+      base.update(new Uint16Array([1234, 512]))
+      t.same(base._block.slice(0, base._blockOffset), Buffer.from('d2040002', 'hex'))
+
+      t.end()
+    }
+  )
 
   t.end()
 })
