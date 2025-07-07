@@ -68,7 +68,7 @@ test('HashBase#update', function (t) {
     var base = new HashBase(64)
     t.throws(function () {
       base.update(null)
-    }, /^TypeError: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView.$/)
+    }, /^TypeError: The "data" argument must be a string, a Buffer, a Uint8Array, or a DataView$/)
     t.end()
   })
 
