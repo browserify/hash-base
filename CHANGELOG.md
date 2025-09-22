@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.1.1](https://github.com/browserify/hash-base/compare/v3.1.0...v3.1.1) - 2025-09-22
+
+### Commits
+
+- [eslint] switch to eslint [`d63bf3b`](https://github.com/browserify/hash-base/commit/d63bf3b65c911e0de091918b7d331c6cf413567e)
+- [meta] add `auto-changelog` [`b2c7408`](https://github.com/browserify/hash-base/commit/b2c74084f744d090a1c59d2f8326a639409281f2)
+- [Tests] avoid tape-mutating beforeEach nonsense [`bb1f9b6`](https://github.com/browserify/hash-base/commit/bb1f9b6492acd97fd02acca575dcb334888b6fbb)
+- [Tests] avoid tape-mutating beforeEach nonsense [`ae228cd`](https://github.com/browserify/hash-base/commit/ae228cd0e9421fcca4c7e9e41b5451fa7ad74c73)
+- [readme] clean up formatting [`fd5cb3d`](https://github.com/browserify/hash-base/commit/fd5cb3d73a9be7617b6af647dd775ede7f5dab24)
+- [readme] clean up formatting [`a13ed61`](https://github.com/browserify/hash-base/commit/a13ed61331879e342435e71569a49061fdf1889c)
+- [Tests] migrate from travis to GHA [`9e2c04c`](https://github.com/browserify/hash-base/commit/9e2c04c435c25363fbe1f1fea8b32390f3f623b7)
+- [Tests] migrate from travis to GHA [`31766d4`](https://github.com/browserify/hash-base/commit/31766d413a21e534c96e6e562174f74b3d0368ca)
+- [Fix] return valid values on multi-byte-wide TypedArray input [`1af18ee`](https://github.com/browserify/hash-base/commit/1af18ee40d747bc177fba2cb89b4e937e3bd0724)
+- [Refactor] use `to-buffer` [`41d738b`](https://github.com/browserify/hash-base/commit/41d738bca2c5fa97c09bed9cdc7b2f3d8f1f9958)
+- [Dev Deps] update `tape`, downgrade `nyc`, clean up scripts [`13d373c`](https://github.com/browserify/hash-base/commit/13d373c1b06ed0a20db0fe158def49a7abf6a85b)
+- [Dev Deps] update `tape`, downgrade `nyc`, clean up scripts [`84f4fab`](https://github.com/browserify/hash-base/commit/84f4fab691c35591f44b1781311de10fc6f76b16)
+- [meta] use `npmignore` [`ecdd9a3`](https://github.com/browserify/hash-base/commit/ecdd9a312e26f81d6a84256d8bcdbf4427f84490)
+- Merge tag 'v3.0.5' [`d59c766`](https://github.com/browserify/hash-base/commit/d59c766986d962868457d05299fe111323dedd6f)
+- Only apps should have lockfiles [`de3ce83`](https://github.com/browserify/hash-base/commit/de3ce831c7f61a2ca3448f639d7b8ebe6b7b27ab)
+- Only apps should have lockfiles [`05b7504`](https://github.com/browserify/hash-base/commit/05b7504d4038fdf380e5c3227ee0719df12f5bda)
+- [Deps] update `inherits`, `safe-buffer` [`2b8687d`](https://github.com/browserify/hash-base/commit/2b8687d89f8e9de6c21bc277b147e76507ba74a6)
+- [Deps] update `safe-buffer`; downgrade `readable-stream` [`523da5d`](https://github.com/browserify/hash-base/commit/523da5dbfcef879a5c6967978cd4d39946f20c5a)
+- [Tests] clean up linting [`4274b7c`](https://github.com/browserify/hash-base/commit/4274b7cc9608712652e56091efcf5c66151be418)
+- [Tests] in node 0.10, Buffer `.fill` returns `undefined` [`0fdfd67`](https://github.com/browserify/hash-base/commit/0fdfd676fc51987e5d93f17858cc0f740b56b6af)
+- [Tests] in node 0.10, Buffer `.fill` returns `undefined` [`5d1f911`](https://github.com/browserify/hash-base/commit/5d1f91153a0c8365e970e0f9a4fde2fd901bb446)
+- [Fix] restore `engines.node` from 3.0.0 [`8cbfd12`](https://github.com/browserify/hash-base/commit/8cbfd123b307d51b6588718baa2c343dddf13fa4)
+- [Fix] restore `engines.node` from 3.0.0 [`b99d8a1`](https://github.com/browserify/hash-base/commit/b99d8a1ce428683c93ac005ea01e48f77ce005db)
+- [Tests] use `safe-buffer` in tests, too [`84bdfe9`](https://github.com/browserify/hash-base/commit/84bdfe944f46edbcaffed7b48567faf460f13bb8)
+- [Tests] use `safe-buffer` in tests, too [`9182f82`](https://github.com/browserify/hash-base/commit/9182f823b7f365189116a4582fa906f8fb008ab6)
+
 ## [v3.1.0](https://github.com/browserify/hash-base/compare/v3.0.5...v3.1.0) - 2020-05-01
 
 ### Merged
