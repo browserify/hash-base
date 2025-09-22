@@ -1,0 +1,16 @@
+{
+	"root": true,
+
+	"extends": "@ljharb",
+
+	"globals": {
+		"Uint8Array": "readonly",
+		"Uint16Array": "readonly",
+	},
+
+	"rules": {
+		"array-bracket-newline": "off",
+		"func-style": ["error", "declaration"],
+		"no-underscore-dangle": "off",
+	},
+}
