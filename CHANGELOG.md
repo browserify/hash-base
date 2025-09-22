@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.1.2](https://github.com/browserify/hash-base/compare/v3.1.1...v3.1.2) - 2025-09-22
+
+### Commits
+
+- [fix] package already works in node 0.8 [`1c19201`](https://github.com/browserify/hash-base/commit/1c1920112ef4baa65085b08ada90b4d0a83b69f2)
+- [Dev Deps] add missing peer dep [`7ac34b6`](https://github.com/browserify/hash-base/commit/7ac34b6011fb02b7a8261ee35f01fe8828218dda)
+
 ## [v3.1.1](https://github.com/browserify/hash-base/compare/v3.1.0...v3.1.1) - 2025-09-22
 
 ### Commits
